@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title> Classificazione </title>
+    </head>
+    <body>
+        <h1> Aggiungi un'immagine...</h1>
+        <input type="file" accept="image/*" id="file-input" capture="environment">
+        <script>
+        const fileInput = document.getElementById('file-input');
+        
+        fileInput.addEventListener('change', (e) => {
+            var http = new XMLHttpRequest();
+            var url = "http://localhost:8080";   
+
+            http.open("POST", url, true);
+            http.setRequestHeader("Content-type", "image/"  + formatFromImg(e.target.files[0]));
+            http.onreadystatechange = function () { 
+                manageResult(http)
+            }
+            http.send(e.target.files[0]);
+        })
+        
+        function manageResult(http) {
+            console.log("manage response..")
+            if (http.readyState == 4 && http.status == 200) {
+                    var result = JSON.parse(http.responseText)
+                    window.alert(result.trashClass);
+                    console.log(result)
+            }
+        }
+
+        function formatFromImg(img) {
+            return img.type.split("/")[1]
+        }
+        </script>
+    </body>
+</html>
