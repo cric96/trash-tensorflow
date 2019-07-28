@@ -5,10 +5,11 @@ import io
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-from classifier import MLPClassifier, Fake
+from classifier import MLPClassifier, SVMClassifier
 import utils
 ##CAN DO BETTER?
-image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
+#image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
+image_classifier = SVMClassifier("adam_densnet121_fine_tuning.h5", "ccn_svm.sav") 
 #image_classifier = Fake()
 
 class ClassifierHttpServer(BaseHTTPRequestHandler):
@@ -45,5 +46,4 @@ def run():
     httpd = HTTPServer(server_address, ClassifierHttpServer)
     print('running server...')
     httpd.serve_forever()
-
 run()
