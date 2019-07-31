@@ -41,7 +41,7 @@ class ClassifierHttpServer(BaseHTTPRequestHandler):
 def run():
     ##make parametrizable 
     print('starting server...')
-    server_address = ('192.168.178.101', 8080) 
+    server_address = ('192.168.1.117', 8080) 
     httpd = HTTPServer(server_address, ClassifierHttpServer)
     print('running server...')
     httpd.serve_forever()
