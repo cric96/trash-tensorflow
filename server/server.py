@@ -1,14 +1,21 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+import os
+useCPU = True
+if(useCPU):
+    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import json
 import base64
 import io
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-from classifier import MLPClassifier, Fake
+from classifier import MLPClassifier, SVMClassifier
 import utils
 ##CAN DO BETTER?
-image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
+#image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
+image_classifier = SVMClassifier("adam_densnet121_fine_tuning.h5", "ccn_svm.sav") 
 #image_classifier = Fake()
 
 class ClassifierHttpServer(BaseHTTPRequestHandler):
@@ -21,9 +28,8 @@ class ClassifierHttpServer(BaseHTTPRequestHandler):
     def do_POST(self): #post handler
         print("reiceved...")
         content_length = int(self.headers['Content-Length']) 
-        img_format = self.headers['Content-type'].split("/")[1] #take image format
         post_data = self.rfile.read(content_length) #read image data
-        img = utils.load_from_bytes(post_data, img_format)
+        img = utils.load_from_bytes(post_data)
         label = image_classifier.classify(img)
         self._set_response()
         self.wfile.write(json.dumps({"trashClass": label}).encode("utf-8"))
@@ -45,5 +51,4 @@ def run():
     httpd = HTTPServer(server_address, ClassifierHttpServer)
     print('running server...')
     httpd.serve_forever()
-
 run()
