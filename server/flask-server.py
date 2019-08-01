@@ -6,6 +6,7 @@ if(useCPU):
 from flask import Flask, url_for, send_from_directory, request
 from flask_cors import CORS
 from classifier import MLPClassifier, SVMClassifier
+import tensorflow as tf
 import utils
 ##CAN DO BETTER?
 #image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
