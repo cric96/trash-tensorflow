@@ -6,10 +6,8 @@ import os
 from sklearn.externals import joblib
 from abc import ABC, abstractmethod
 import image_utils
-K.clear_session()
 #global context 
 global graph
-graph = tf.get_default_graph()
 
 width_image = 224
 height_image = 224
@@ -30,9 +28,8 @@ class ImageClassifier(ABC):
 
     def query(self, action_on_safe_thread):
         #run on global
-        with graph.as_default():
-            self.net._make_predict_function()
-            prediction = action_on_safe_thread(self.net)
+        self.net._make_predict_function()
+        prediction = action_on_safe_thread(self.net)
         return prediction
 
     @abstractmethod
