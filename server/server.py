@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 from classifier import MLPClassifier, SVMClassifier
-import utils
+import image_utils
 ##CAN DO BETTER?
 #image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
 image_classifier = SVMClassifier("adam_densnet121_fine_tuning.h5", "ccn_svm.sav") 
@@ -29,7 +29,8 @@ class ClassifierHttpServer(BaseHTTPRequestHandler):
         print("reiceved...")
         content_length = int(self.headers['Content-Length']) 
         post_data = self.rfile.read(content_length) #read image data
-        img = utils.load_from_bytes(post_data)
+        img = image_utils.load_from_bytes(post_data)
+        print(img)
         label = image_classifier.classify(img)
         self._set_response()
         self.wfile.write(json.dumps({"trashClass": label}).encode("utf-8"))
@@ -47,7 +48,7 @@ class ClassifierHttpServer(BaseHTTPRequestHandler):
 def run():
     ##make parametrizable 
     print('starting server...')
-    server_address = ('192.168.178.101', 8080) 
+    server_address = ('0.0.0.0', 8080) 
     httpd = HTTPServer(server_address, ClassifierHttpServer)
     print('running server...')
     httpd.serve_forever()
