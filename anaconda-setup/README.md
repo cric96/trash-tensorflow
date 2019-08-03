@@ -10,10 +10,21 @@ To create the right environment to launch a flask server with tensor flow and ke
 
 3. write on the terminal the follow script: 
 	
+   - using environment.yaml
+   
+     ```
+     conda env create -f {path of environment.yml}
+     conda activate flask-server-env
+     ```
+   
+   - using install.txt
+   
+     ```
+     conda create --name flask-server-env --file {path of install.txt}
+     conda activate flask-server-env
    ```
-   conda env create -f {path of environment.yml}
-   conda activate flask-server-env
-   ```
+     
+     
    
 4. after conda environment creation, write this on conda terminal:
 
