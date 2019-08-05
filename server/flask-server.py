@@ -11,8 +11,9 @@ import image_utils
 import http_code
 import tensorflow as tf
 
-image_classifier = MLPClassifier("adam_densnet121_fine_tuning.h5")
-#image_classifier = SVMClassifier("adam_densnet121_fine_tuning.h5", "ccn_svm.sav") 
+#image_classifier = MLPClassifier("model/CNN_15_40_02_08_2019.h5")
+image_classifier = SVMClassifier("model/CNN_SVM_15_40_02_08_2019.h5", "model/CNN_SVM_15_40_02_08_2019.sav")
+
 app = Flask(__name__)
 CORS(app)
 

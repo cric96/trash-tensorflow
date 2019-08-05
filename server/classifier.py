@@ -12,15 +12,15 @@ global graph
 width_image = 224
 height_image = 224
 channel = 3
-labels = ["cartone", "vetro", "metallo", "carta", "plastica"]
+labels = ["vetro", "metallo", "carta", "plastica"]
 class ImageClassifier(ABC):
     def __init__(self, model_path):
         super().__init__()
         self.net = tf.keras.models.load_model(model_path)
         #self.net.predict(np.array([[0],[0],[0],[0]])) # warmup
         self.net._make_predict_function()
-        self.net._make_test_function()
-        self.net._make_train_function()
+        # self.net._make_test_function() now the save not include the training function
+        # self.net._make_train_function() 
         K.manual_variable_initialization(True)
         #K.clear_session()
         #graph.finalize()
@@ -53,7 +53,8 @@ class SVMClassifier(ImageClassifier):
     def __init__(self, cnn_name_h5, svm_name_sav):
         super().__init__(cnn_name_h5)
         self.svm = joblib.load(svm_name_sav)
-        self.net = tf.keras.models.Model(self.net.input, self.net.layers[-2].output)
+        # no need to change the output layer, the saved model, now, is already feature extractor
+        # self.net = tf.keras.models.Model(self.net.input, self.net.layers.output)
 
     def classify(self, img): 
         resized = image_utils.resize_img(img, width_image, height_image)
