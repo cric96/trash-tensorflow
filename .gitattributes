@@ -4,3 +4,4 @@ server/model/CNN_15_40_02_08_2019.h5 filter=lfs diff=lfs merge=lfs -text
 server/model/CNN_SVM_15_40_02_08_2019.h5 filter=lfs diff=lfs merge=lfs -text
 server/model/CNN_SVM_15_40_02_08_2019.sav filter=lfs diff=lfs merge=lfs -text
 saved_model/CNN[[:space:]]+[[:space:]]SVM_11_35_05_08_2019.zip filter=lfs diff=lfs merge=lfs -text
+dataset/v3/** filter=lfs diff=lfs merge=lfs -text
