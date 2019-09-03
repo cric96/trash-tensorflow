@@ -7,8 +7,8 @@ from skimage.transform import resize
 import numpy as np
 
 def load_from_bytes(img_bytes):
-    img = io.BytesIO(img_bytes) #convert in bytes
-    img = image.load_img(img, target_size=(254, 254))
+    img = io.BytesIO(img_bytes) 
+    img = image.load_img(img)
     return img
 
 def resize_img(img, width, height):

@@ -6,34 +6,35 @@ import os
 from sklearn.externals import joblib
 from abc import ABC, abstractmethod
 import image_utils
+import threading
+from concurrent.futures import ThreadPoolExecutor
 #global context 
 global graph
 
 width_image = 224
-height_image = 224
-channel = 3
-labels = ["vetro", "metallo", "carta", "plastica"]
+height_image = 224 
+channel = 3 #image channel (red, green, blue)
+labels = ["vetro", "metallo", "carta", "plastica"] #trash category used to training the net
+"""
+    Image Classifier is used to classify a trash from an image
+    an example of prediction can be:
+        label = classifier.classify
+"""
 class ImageClassifier(ABC):
     def __init__(self, model_path):
         super().__init__()
-        self.net = tf.keras.models.load_model(model_path)
-        #self.net.predict(np.array([[0],[0],[0],[0]])) # warmup
-        self.net._make_predict_function()
-        # self.net._make_test_function() now the save not include the training function
-        # self.net._make_train_function() 
-        K.manual_variable_initialization(True)
-        #K.clear_session()
-        #graph.finalize()
-        self.net.predict(np.zeros([4, width_image,height_image,channel],dtype=np.uint8))
-
-    def query(self, action_on_safe_thread):
-        #run on global
-        self.net._make_predict_function()
-        prediction = action_on_safe_thread(self.net)
-        return prediction
+        self.executor = ThreadPoolExecutor(max_workers=1)
+        netPromise = self.executor.submit(lambda: self.init(model_path)) #used to load keras net in the same thread where prediction will made
+        self.net = netPromise.result() # wait for net loading...
+    
+    def init(self, model_path):
+        return tf.keras.models.load_model(model_path) #load cnn model from file 
+    #subit the classify abstract method
+    def classify(self, img):
+        return self.executor.submit(lambda: self.safeClassify(img)).result() 
 
     @abstractmethod
-    def classify(self, img):
+    def safeClassify(self, img):
         pass
 
 class MLPClassifier(ImageClassifier):
@@ -41,24 +42,22 @@ class MLPClassifier(ImageClassifier):
     def __init__(self, cnn_name_h5):
         super().__init__(cnn_name_h5)
 
-    def classify(self, img): 
-        resized = image_utils.resize_img(img, width_image, height_image)
-        tensor = image_utils.img_to_tensor(resized)
-        #label_index = self.net.predict_classes(tensor)[0]
-        label_index = self.query(lambda net: net.predict_classes(tensor)[0])
-        return labels[label_index]
+    def safeClassify(self, img): 
+        image_resized = image_utils.resize_img(img, width_image, height_image)
+        tensor = image_utils.img_to_tensor(image_resized)
+        max_prob = np.amax(self.net.predict(tensor))
+        label_index = self.net.predict_classes(tensor)[0]
+        return (labels[label_index], max_prob)
 
 class SVMClassifier(ImageClassifier):
     #cnn_name is model net store with h5 extension and svm_name is the svm name
     def __init__(self, cnn_name_h5, svm_name_sav):
         super().__init__(cnn_name_h5)
         self.svm = joblib.load(svm_name_sav)
-        # no need to change the output layer, the saved model, now, is already feature extractor
-        # self.net = tf.keras.models.Model(self.net.input, self.net.layers.output)
 
-    def classify(self, img): 
-        resized = image_utils.resize_img(img, width_image, height_image)
-        tensor = image_utils.img_to_tensor(resized)
-        #feature = self.query(tensor)
-        feature = self.query(lambda net: net.predict(tensor))
-        return self.svm.predict(feature)[0]
+    def safeClassify(self, img): 
+        image_resized = image_utils.resize_img(img, width_image, height_image)
+        tensor = image_utils.img_to_tensor(image_resized)
+        feature = self.net.predict(tensor)
+        max_prob = np.amax(self.svm.predict_proba(feature))
+        return (self.svm.predict(feature)[0], max_prob)

@@ -10,7 +10,7 @@
         
         fileInput.addEventListener('change', (e) => {
             var http = new XMLHttpRequest();
-            var url = "http://localhost:8080";   
+            var url = "http://localhost:8080/prediction/barcode";   
 
             http.open("POST", url, true);
             http.setRequestHeader("Content-type", "image/"  + formatFromImg(e.target.files[0]));
@@ -24,7 +24,7 @@
             console.log("manage response..")
             if (http.readyState == 4 && http.status == 200) {
                     var result = JSON.parse(http.responseText)
-                    window.alert(result.trashClass);
+                    window.alert(result.trashCategory );
                     console.log(result)
             }
         }
