@@ -9,7 +9,7 @@ if(useCPU):
     os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 from flask import Flask, url_for, send_from_directory, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from classifier import MLPClassifier, SVMClassifier
 import image_utils
 import http_code
@@ -24,10 +24,11 @@ image_classifier = SVMClassifier("model/CNN_SVM_15_40_02_08_2019.h5", "model/CNN
 
 #create flask app, it is used to start rest api server
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/prediction/*" : {"origins" : "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route('/prediction/ai', methods = ['POST'])
+@app.route('/prediction/ai', methods = ['POST', 'OPTIONS'])
+@cross_origin()
 def api_ai():
     ##app.logger.info(PROJECT_HOME)
     post_data = request.data #read image data
@@ -38,7 +39,8 @@ def api_ai():
     else:
         return {}, http_code.no_category
     
-@app.route('/prediction/barcode', methods = ['POST'])
+@app.route('/prediction/barcode', methods = ['POST', 'OPTIONS'])
+@cross_origin()
 def api_barcode():
     #TODO
     # retrieve image from request
