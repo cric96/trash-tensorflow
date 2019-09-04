@@ -62,4 +62,4 @@ if __name__ == '__main__':
     serverPort=8080
     if(len(sys.argv) == 2) :
         serverPort = sys.argv[1]
-    app.run(debug=False, port=serverPort)
+    app.run(debug=False, port=serverPort, host='0.0.0.0')
