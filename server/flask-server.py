@@ -25,9 +25,9 @@ image_classifier = SVMClassifier("model/CNN_SVM_15_40_02_08_2019.h5", "model/CNN
 #create flask app, it is used to start rest api server
 app = Flask(__name__)
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/prediction/ai', methods = ['POST'])
-
 def api_ai():
     ##app.logger.info(PROJECT_HOME)
     post_data = request.data #read image data

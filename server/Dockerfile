@@ -1,4 +1,4 @@
-FROM base-server-python:latest
+FROM asw2019/base-server-python:latest
 
 COPY . .
 
