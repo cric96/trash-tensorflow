@@ -14,7 +14,7 @@ global graph
 width_image = 224
 height_image = 224 
 channel = 3 #image channel (red, green, blue)
-labels = ["vetro", "metallo", "carta", "plastica"] #trash category used to training the net
+labels = ["Vetro", "Alluminio", "Carta", "Plastica"] #trash category used to training the net
 """
     Image Classifier is used to classify a trash from an image
     an example of prediction can be:
