@@ -1,0 +1,58 @@
+swagger: '2.0'
+info:
+  description: "This server is used to predict a trash category by an image or a barcode."
+  version: 1.0.0
+  title: "Scanbage prediction"
+  license:
+    name: "Apache 2.0"
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: 'scanbage.ml:7000'
+basePath: "/v0/prediction"
+tags:
+  - name: "ai"
+    description: "Prediction based on artificial inteligence"
+  - name: "barcode"
+    description: "Prediction based on barcode reading"
+schemes:
+  - http
+paths:
+  /ai:
+    post:
+      tags:
+        - "ai"
+      summary: "Predict the trash category by a trash photo."
+      consumes:
+        - "image/jpg"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Prediction completed."
+          schema:
+            $ref: '#/definitions/Response'
+  /barcode:
+    post:
+      tags:
+        - "barcode"
+      summary: "Predict trash category by the sent image."
+      consumes:
+        - "image/jpg"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Category found."
+          schema:
+            $ref: '#/definitions/Response'
+
+definitions:
+  Response:
+    type: object
+    properties:
+      trashCategory:
+        type: string
+        example: Plastica
+      status:
+        type: integer
+        enum: [0,1,2]
+        description: "0 = category found, 1 = category not found, 2 = barcode not found"
