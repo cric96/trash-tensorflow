@@ -23,20 +23,20 @@ PROB_THR = 0.9
 #create the classifier
 image_classifier = SVMClassifier("model/CNN_SVM_15_40_02_08_2019.h5", "model/CNN_SVM_15_40_02_08_2019.sav")
 #image_classifier = MLPClassifier("model/CNN_15_40_02_08_2019.h5")
-base_path = "v0/prediction/"
+base_path = "/v0/prediction/"
 #create flask app, it is used to start rest api server
 app = Flask(__name__)
-CORS(app, resources={r"/prediction/*" : {"origins" : "*"}})
+CORS(app, resources={r"/v0/prediction/*" : {"origins" : "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route(base_path + 'ai', methods = ['POST', 'OPTIONS']) 
-
 @cross_origin()
 def api_ai():
     ##app.logger.info(PROJECT_HOME)
     post_data = request.data #read image data
     img = image_utils.load_from_bytes(post_data) #convert image into object type that could be passed to classifier
     prediction = image_classifier.classify(img) #get trash label and probability from image
+    print(prediction)
     if(prediction[PROB_INDEX] > PROB_THR): #check if the category predicted has probability greater then the threshould
         return rb.category_found(prediction[CATEGORY_INDEX])
     else:
@@ -69,7 +69,7 @@ def api_barcode():
         return rb.category_not_found()
 
 if __name__ == '__main__':
-    serverPort=8080
+    serverPort=7000
     if(len(sys.argv) == 2) :
         serverPort = sys.argv[1]
     app.run(debug=False, port=serverPort, host='0.0.0.0')

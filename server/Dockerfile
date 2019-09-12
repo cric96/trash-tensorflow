@@ -2,7 +2,7 @@ FROM asw2019/base-server-python:latest
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 7000
 
 ENTRYPOINT ["python3"]
 

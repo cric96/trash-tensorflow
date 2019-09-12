@@ -15,6 +15,12 @@ width_image = 224
 height_image = 224 
 channel = 3 #image channel (red, green, blue)
 labels = ["Vetro", "Alluminio", "Carta", "Plastica"] #trash category used to training the net
+svm_labels_to_categories = {
+    "plastic" : "Plastica",
+    "paper" : "Carta",
+    "glass" : "Vetro",
+    "metal" : "Alluminio"
+}
 """
     Image Classifier is used to classify a trash from an image
     an example of prediction can be:
@@ -60,4 +66,5 @@ class SVMClassifier(ImageClassifier):
         tensor = image_utils.img_to_tensor(image_resized)
         feature = self.net.predict(tensor)
         max_prob = np.amax(self.svm.predict_proba(feature))
-        return (self.svm.predict(feature)[0], max_prob)
+        svm_label = self.svm.predict(feature)[0]
+        return (svm_labels_to_categories[svm_label], max_prob)

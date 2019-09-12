@@ -49,7 +49,7 @@ definitions:
   Response:
     type: object
     properties:
-      trashCategory:
+      category:
         type: string
         example: Plastica
       status:
