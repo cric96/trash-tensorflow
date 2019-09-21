@@ -26,7 +26,7 @@ image_classifier = SVMClassifier("model/CNN_SVM_15_40_02_08_2019.h5", "model/CNN
 base_path = "/v0/prediction/"
 #create flask app, it is used to start rest api server
 app = Flask(__name__)
-CORS(app, resources={r"/v0/prediction/*" : {"origins" : "*"}})
+CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route(base_path + 'ai', methods = ['POST', 'OPTIONS']) 
@@ -72,4 +72,5 @@ if __name__ == '__main__':
     serverPort=7000
     if(len(sys.argv) == 2) :
         serverPort = sys.argv[1]
+    serverPort = int(os.environ.get('PORT', serverPort))
     app.run(debug=False, port=serverPort, host='0.0.0.0')

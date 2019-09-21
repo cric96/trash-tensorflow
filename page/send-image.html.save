@@ -10,21 +10,19 @@
         
         fileInput.addEventListener('change', (e) => {
             var http = new XMLHttpRequest();
-            var url = "http://localhost:7000/v0/prediction/barcode";   
-    
+            var url = "http://localhost:8080/prediction/ai
+";   
+
             http.open("POST", url, true);
             http.setRequestHeader("Content-type", "image/"  + formatFromImg(e.target.files[0]));
             http.onreadystatechange = function () { 
                 manageResult(http)
             }
-            console.log(e.target.files[0])
             http.send(e.target.files[0]);
         })
         
         function manageResult(http) {
             console.log("manage response..")
-            console.log("status = " + http.status)
-            console.log("response = " + http.responseText)
             if (http.readyState == 4 && http.status == 200) {
                     var result = JSON.parse(http.responseText)
                     window.alert(result.trashCategory );
