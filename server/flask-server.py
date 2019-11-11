@@ -19,7 +19,7 @@ import tensorflow as tf
 
 CATEGORY_INDEX = 0
 PROB_INDEX = 1
-PROB_THR = 0.9
+PROB_THR = 0.6
 #create the classifier
 image_classifier = SVMClassifier("model/CNN_SVM_15_40_02_08_2019.h5", "model/CNN_SVM_15_40_02_08_2019.sav")
 #image_classifier = MLPClassifier("model/CNN_15_40_02_08_2019.h5")
