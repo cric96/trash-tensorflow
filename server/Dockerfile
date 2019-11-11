@@ -1,8 +1,8 @@
-FROM asw2019/base-server-python:latest
+FROM asw2019/base-python-server:latest
 
 COPY . .
 
-EXPOSE 7000
+#EXPOSE 7000
 
 ENTRYPOINT ["python3"]
 
